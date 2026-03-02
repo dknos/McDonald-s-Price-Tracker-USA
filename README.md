@@ -59,3 +59,18 @@ python3 scripts/st_louis_price_tracker.py --config config/st_louis_100mi.json --
 ```
 
 This performs no network calls and prints expected sample density.
+
+
+## Launch locally in browser
+
+Use a static server from the repo root:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open:
+
+- `http://localhost:8000/web/`
+
+This renders a local preview of the 100-mile St. Louis coverage circle and sampling points from `config/st_louis_100mi.json`.
