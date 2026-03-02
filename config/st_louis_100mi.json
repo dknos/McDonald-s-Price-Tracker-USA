@@ -1,0 +1,19 @@
+{
+  "region_name": "greater-st-louis",
+  "country": "us",
+  "language": "en-us",
+  "center": {
+    "name": "St. Louis, MO",
+    "lat": 38.6270,
+    "lng": -90.1994
+  },
+  "radius_miles": 100,
+  "sampling_step_miles": 15,
+  "request_timeout_seconds": 20,
+  "store_search_url": "https://www.mcdonalds.com/googleappsv2/geolocation",
+  "store_search_params": {
+    "radius": 50,
+    "maxResults": 25
+  },
+  "store_menu_url_template": "https://www.mcdonalds.com/googleappsv2/menu?storeId={store_id}&country=us&language=en-us"
+}
