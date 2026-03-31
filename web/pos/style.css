@@ -1,17 +1,18 @@
 /* ═══ RESET & BASE ═══ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #1a1a1a; color: #eee; overflow: hidden; }
+html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #1a1a1a; color: #eee; overflow: hidden; -webkit-overflow-scrolling: touch; }
 
 /* ═══ SCREENS ═══ */
-.screen { display: none; height: 100vh; width: 100vw; }
+.screen { display: none; height: 100vh; width: 100vw; overflow: hidden; }
 .screen.active { display: flex; }
 
 /* ═══ SPLASH ═══ */
 #splash {
   align-items: center; justify-content: center;
   background: linear-gradient(135deg, #1a1a1a 0%, #2d1a0a 100%);
+  overflow-y: auto;
 }
-.splash-inner { text-align: center; max-width: 400px; width: 90%; }
+.splash-inner { text-align: center; max-width: 400px; width: 90%; margin: auto; padding: 20px 0; }
 .arches {
   font-size: 96px; font-weight: 900; color: #ffbc0d;
   font-family: 'Arial Black', sans-serif;
@@ -356,8 +357,21 @@ html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sa
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 700px) {
   .pos-layout { flex-direction: column; }
-  .pos-cart { width: 100%; height: 40vh; border-left: none; border-top: 1px solid #333; }
-  .item-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .pos-menu { flex: 1; min-height: 0; overflow: hidden; }
+  .pos-cart { width: 100%; height: 40vh; border-left: none; border-top: 1px solid #333; flex-shrink: 0; }
+  .item-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; padding: 8px; }
+  .item-card { min-height: 100px; padding: 8px; }
+  .item-card .item-img { width: 56px; height: 56px; }
+  .item-card .item-img-placeholder { width: 56px; height: 56px; }
+  .cat-bar { padding: 0 4px; }
+  .cat-btn { padding: 8px 12px; font-size: 0.7rem; }
   .chart-controls { width: 100%; }
   .chart-search { width: 100%; }
+  .chart-top-bar { padding: 8px 10px; gap: 6px; }
+  .chart-zip-row { flex-wrap: wrap; }
+  .chart-body { -webkit-overflow-scrolling: touch; }
+  #chart-table th.col-addr, #chart-table td.col-addr { min-width: 120px; max-width: 160px; }
+  .modal-content { width: 95%; max-height: 90vh; }
+  .arches { font-size: 64px; }
+  .splash-inner h1 { font-size: 1.1rem; }
 }
