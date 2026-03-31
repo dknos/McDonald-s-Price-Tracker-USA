@@ -1,0 +1,44 @@
+# Credentials & tokens
+env.json
+login_refresh_response.json
+market_credentials.json
+*.secret
+
+# Checkpoints & logs
+checkpoint_*.json
+us_checkpoint.json
+fetch_*_log.txt
+
+# APK files & extracted assets
+*.apkm
+*.apk
+apk_base/
+apk_extracted/
+jadx/
+jadx.zip
+market_apks/
+
+# Large data files (raw)
+menus_json/
+us_locations.json
+missouri_locations.json
+missouri_nsns.txt
+global_osm_locations.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

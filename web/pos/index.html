@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>McDonald's POS - Price Finder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══ SPLASH SCREEN ═══ -->
+  <div id="splash" class="screen active">
+    <div class="splash-inner">
+      <div class="splash-logo">
+        <div class="arches">M</div>
+        <h1>McDonald's Price Finder</h1>
+        <p class="tagline">Compare real menu prices at nearby stores</p>
+      </div>
+
+      <div class="splash-form">
+        <div class="input-group">
+          <label for="zip-input">ZIP Code</label>
+          <input type="text" id="zip-input" maxlength="5" pattern="[0-9]{5}"
+                 placeholder="Enter ZIP code" autocomplete="postal-code">
+        </div>
+
+        <div class="input-group">
+          <label for="dist-select">Search Radius</label>
+          <select id="dist-select">
+            <option value="5">5 miles</option>
+            <option value="10" selected>10 miles</option>
+            <option value="15">15 miles</option>
+            <option value="25">25 miles</option>
+            <option value="50">50 miles</option>
+          </select>
+        </div>
+
+        <button id="btn-find" class="btn-primary" onclick="findStores()">
+          Find Stores &amp; Order
+        </button>
+
+        <div class="splash-divider"><span>or</span></div>
+
+        <button id="btn-see-all" class="btn-secondary" onclick="showStateList()">
+          Browse Prices by State
+        </button>
+      </div>
+
+      <div id="splash-status" class="status-msg"></div>
+    </div>
+  </div>
+
+  <!-- ═══ STATE BROWSER ═══ -->
+  <div id="state-screen" class="screen">
+    <div class="top-bar">
+      <button class="btn-back" onclick="goSplash()">&larr; Back</button>
+      <h2>Browse by State</h2>
+      <div></div>
+    </div>
+    <div id="state-grid" class="state-grid"></div>
+  </div>
+
+  <!-- ═══ PRICE CHART SCREEN (See All by State) ═══ -->
+  <div id="chart-screen" class="screen">
+    <div class="chart-layout">
+      <div class="chart-top-bar">
+        <button class="btn-back" onclick="showStateList()">&larr; States</button>
+        <h2 id="chart-title">Missouri</h2>
+        <div class="chart-controls">
+          <input type="search" id="chart-search" placeholder="Search items..." class="chart-search">
+          <select id="chart-cat-filter" onchange="renderChart()">
+            <option value="All">All Categories</option>
+          </select>
+          <select id="chart-highlight" onchange="renderChart()">
+            <option value="gradient">Color gradient</option>
+            <option value="lowest">Highlight cheapest</option>
+            <option value="highest">Highlight priciest</option>
+            <option value="none">No highlight</option>
+          </select>
+        </div>
+        <div class="chart-zip-row">
+          <input type="text" id="chart-zip" maxlength="5" placeholder="ZIP" class="chart-zip-input">
+          <input type="number" id="chart-radius" value="25" min="1" max="100" class="chart-radius-input" title="Radius in miles">
+          <span style="color:#888;font-size:0.75rem">mi</span>
+          <button class="btn-sm" onclick="chartFilterByZip()">Filter</button>
+          <button class="btn-sm btn-sm-sec" onclick="chartClearZip()">Show All</button>
+          <span id="chart-store-info" class="chart-store-info"></span>
+        </div>
+        <button class="btn-order-from-chart" onclick="chartGoToOrder()">
+          Order from these stores &rarr;
+        </button>
+      </div>
+      <div id="chart-body" class="chart-body">
+        <table id="chart-table">
+          <thead id="chart-thead"></thead>
+          <tbody id="chart-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ POS SCREEN ═══ -->
+  <div id="pos-screen" class="screen">
+    <div class="pos-layout">
+
+      <!-- Left: categories + items -->
+      <div class="pos-menu">
+        <div class="pos-header">
+          <button class="btn-back" onclick="goSplash()">&larr;</button>
+          <div id="pos-title" class="pos-title">Menu</div>
+          <div id="store-count" class="store-badge">0 stores</div>
+        </div>
+
+        <div id="cat-bar" class="cat-bar"></div>
+        <div id="item-grid" class="item-grid"></div>
+      </div>
+
+      <!-- Right: cart + comparison -->
+      <div class="pos-cart">
+        <div class="cart-header">
+          <h3>Your Order</h3>
+          <button class="btn-clear" onclick="clearCart()">Clear</button>
+        </div>
+        <div id="cart-items" class="cart-items">
+          <div class="cart-empty">Tap items to add</div>
+        </div>
+        <div class="cart-footer">
+          <div id="cart-total" class="cart-total">$0.00</div>
+          <button class="btn-primary btn-compare" onclick="showComparison()">
+            Compare Stores
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ COMPARISON MODAL ═══ -->
+  <div id="compare-modal" class="modal" onclick="closeCompare(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Price Comparison</h3>
+        <button class="btn-close" onclick="closeCompare()">&times;</button>
+      </div>
+      <div id="compare-body" class="compare-body"></div>
+    </div>
+  </div>
+
+  <!-- ═══ LOADING OVERLAY ═══ -->
+  <div id="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <div id="loading-msg">Loading...</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

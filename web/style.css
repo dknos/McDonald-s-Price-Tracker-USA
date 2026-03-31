@@ -1,0 +1,311 @@
+:root {
+    --bg: #ffffff;
+    --bg2: #f5f5f5;
+    --border: #ddd;
+    --sticky-z: 10;
+    --header-z: 20;
+    --corner-z: 30;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #121212;
+        --bg2: #1e1e1e;
+        --border: #333;
+    }
+}
+
+body { padding: 1rem; }
+
+/* ── Controls ── */
+#controls {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+.control-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+}
+.control-row:last-child { margin-bottom: 0; }
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+.control-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.7;
+    margin: 0;
+}
+.small-btn {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.85rem;
+    height: 2.2rem;
+    cursor: pointer;
+}
+
+/* ── Category & order chips ── */
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+}
+.chip {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    user-select: none;
+    transition: background 0.15s;
+}
+.chip:hover { opacity: 0.8; }
+.chip.active {
+    background: #d4202a;
+    color: white;
+    border-color: #d4202a;
+}
+.chip.order-chip {
+    background: #e8f4fd;
+    border-color: #2196f3;
+    color: #1565c0;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+@media (prefers-color-scheme: dark) {
+    .chip.order-chip { background: #1a3a52; color: #90caf9; border-color: #1976d2; }
+}
+.chip.order-chip .remove-item {
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.6;
+    margin-left: 0.2rem;
+}
+.chip.order-chip .remove-item:hover { opacity: 1; }
+.chip.no-price { opacity: 0.5; border-style: dashed; }
+
+/* ── Suggestions ── */
+.suggestions-box {
+    position: absolute;
+    z-index: 100;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 320px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.suggestion-item {
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.suggestion-item:hover { background: var(--bg2); }
+
+/* ── Status bar ── */
+#status-bar {
+    font-size: 0.82rem;
+    opacity: 0.75;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+}
+
+/* ── Order summary ── */
+#order-summary {
+    background: #fff8e1;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+@media (prefers-color-scheme: dark) {
+    #order-summary { background: #2a2000; border-color: #7a5c00; }
+}
+#order-summary h4 { margin: 0 0 0.5rem; font-size: 1rem; }
+.ranking-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.ranking-table th, .ranking-table td { padding: 0.3rem 0.6rem; text-align: left; border-bottom: 1px solid var(--border); }
+.ranking-table tr:first-child td { font-weight: bold; color: #2e7d32; }
+.ranking-table tr:nth-child(2) td { color: #1565c0; }
+
+/* ── Table ── */
+.table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 75vh;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    position: relative;
+}
+#main-table {
+    border-collapse: collapse;
+    min-width: max-content;
+    width: 100%;
+}
+
+/* Sticky header */
+#main-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: var(--header-z);
+    background: var(--bg);
+    border-bottom: 2px solid var(--border);
+    text-align: center;
+    padding: 0.5rem 0.4rem;
+    font-size: 0.78rem;
+    white-space: normal;
+    min-width: 90px;
+    max-width: 130px;
+    vertical-align: bottom;
+}
+
+/* Sticky first two columns */
+#main-table th:nth-child(1),
+#main-table td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: var(--sticky-z);
+    background: var(--bg);
+    font-weight: bold;
+    min-width: 70px;
+}
+#main-table th:nth-child(2),
+#main-table td:nth-child(2) {
+    position: sticky;
+    left: 70px;
+    z-index: var(--sticky-z);
+    background: var(--bg);
+    min-width: 220px;
+    max-width: 280px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* Corner cell (top-left intersection) */
+#main-table thead th:nth-child(1),
+#main-table thead th:nth-child(2) {
+    z-index: var(--corner-z);
+}
+
+#main-table td {
+    text-align: center;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.82rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+/* Zebra stripe */
+#main-table tbody tr:nth-child(even) td {
+    background-color: color-mix(in srgb, var(--bg2) 60%, transparent);
+}
+#main-table tbody tr:nth-child(even) td:nth-child(1),
+#main-table tbody tr:nth-child(even) td:nth-child(2) {
+    background-color: var(--bg2);
+}
+
+/* Highlight for summary rows */
+#main-table tbody tr.summary-row td {
+    background: var(--bg2) !important;
+    font-weight: bold;
+}
+#main-table tbody tr.divider-row td {
+    height: 4px;
+    background: var(--border) !important;
+    padding: 0;
+}
+
+/* Highlighted item columns */
+#main-table th.order-col { background: #e3f2fd !important; border-bottom-color: #1976d2 !important; }
+#main-table td.order-col { background-color: color-mix(in srgb, #bbdefb 20%, transparent) !important; }
+@media (prefers-color-scheme: dark) {
+    #main-table th.order-col { background: #0d2137 !important; border-bottom-color: #1565c0 !important; }
+    #main-table td.order-col { background-color: color-mix(in srgb, #1a3a52 30%, transparent) !important; }
+}
+
+/* Sortable column headers */
+#main-table th.sortable-col:hover { background: color-mix(in srgb, var(--bg2) 80%, #1976d2 20%) !important; }
+
+/* N/A cells */
+#main-table td.na-cell { opacity: 0.3; font-size: 0.7rem; }
+
+a, a:visited { color: #1565c0; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+
+/* ── Location picker dropdowns ── */
+#location-picker select { width: auto; min-width: 200px; }
+
+/* ── National / all-states button ── */
+.national-btn {
+    background: #d4202a !important;
+    color: white !important;
+    border-color: #d4202a !important;
+    font-weight: bold;
+}
+.national-btn:hover { opacity: 0.85; }
+
+
+/* ── Fun facts (index page) ── */
+#fun-facts {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+#fun-facts h3 { margin: 0 0 0.75rem; font-size: 1.1rem; }
+.facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+.fact-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+}
+.fact-icon { font-size: 1.4rem; margin-bottom: 0.2rem; }
+.fact-title { font-weight: 700; font-size: 0.78rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+.fact-body { line-height: 1.4; }
+
+/* ── National view table ── */
+.nat-col-name { min-width: 200px; max-width: 280px; text-align: left !important; }
+.nat-col-min_addr, .nat-col-max_addr { min-width: 180px; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nat-col-spread_pct, .nat-col-cal, .nat-col-cal_per_dollar, .nat-col-count { min-width: 70px; }
+.nat-col-min, .nat-col-max, .nat-col-avg { min-width: 80px; font-variant-numeric: tabular-nums; }
+
+.state-badge {
+    display: inline-block;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    padding: 0.1rem 0.35rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* Cal/$ score cells */
+.cal-score { font-weight: 600; }
+
+/* Price index bar in state rankings */
+.price-index-bar {
+    display: inline-block;
+    height: 10px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 0.3rem;
+    opacity: 0.7;
+}
