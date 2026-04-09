@@ -323,12 +323,12 @@ html, body {
   content: '\1F354'; font-size: 28px; opacity: 0.15;
 }
 .item-card .item-name {
-  font-size: 0.78rem; font-weight: 500; flex: 1; line-height: 1.35;
+  font-size: 0.78rem; font-weight: 500; line-height: 1.35;
   color: #d0d0d0;
 }
 .item-card .item-price {
-  font-size: 1rem; font-weight: 700; color: #ffbc0d; margin-top: 6px;
-  font-variant-numeric: tabular-nums;
+  font-size: 1rem; font-weight: 700; color: #ffbc0d; margin-top: auto;
+  padding-top: 6px; font-variant-numeric: tabular-nums;
 }
 .item-card .item-range { font-size: 0.65rem; color: #555; margin-top: 2px; }
 
