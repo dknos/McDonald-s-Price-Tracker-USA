@@ -207,20 +207,24 @@ function removeOutliers(sortedPrices) {
 }
 
 function buildMergedItems() {
-  const storeNSNs = new Set(nearbyStores.map(s => s.nsn));
+  // Use ALL stores in the loaded state for price ranges and item discovery.
+  // nearbyStores is only used for cart comparison — not for min/max/avg display.
+  const allNSNs = new Set(stores.map(s => s.nsn));
+  const nearbyNSNs = new Set(nearbyStores.map(s => s.nsn));
   const groups = {};
 
   for (let i = 0; i < itemNames.length; i++) {
     const raw = itemNames[i];
     if (!raw || !raw.trim()) continue;
-    if (isJunkItem(raw)) continue;           // skip non-food junk
+    if (isJunkItem(raw)) continue;
 
-    let hasPrice = false;
-    for (const nsn of storeNSNs) {
+    // Item must have a price at one of the nearby stores to appear in the grid
+    let hasNearbyPrice = false;
+    for (const nsn of nearbyNSNs) {
       const prices = priceMatrix[nsn];
-      if (prices && prices[i] !== null && prices[i] > 0) { hasPrice = true; break; }
+      if (prices && prices[i] !== null && prices[i] > 0) { hasNearbyPrice = true; break; }
     }
-    if (!hasPrice) continue;
+    if (!hasNearbyPrice) continue;
 
     const key = dedupeKey(raw);
     if (!groups[key]) {
@@ -233,10 +237,10 @@ function buildMergedItems() {
 
   mergedItems = [];
   for (const g of Object.values(groups)) {
-    // Collect all prices for this item across stores
+    // Collect prices from ALL stores in the state for range display
     const allPrices = [];
     for (const idx of g.indices) {
-      for (const nsn of storeNSNs) {
+      for (const nsn of allNSNs) {
         const prices = priceMatrix[nsn];
         if (prices && prices[idx] !== null && prices[idx] > 0) {
           allPrices.push(prices[idx]);
@@ -245,16 +249,15 @@ function buildMergedItems() {
     }
     if (allPrices.length === 0) continue;
 
-    // Remove outliers using IQR method, then cap and filter
     allPrices.sort((a, b) => a - b);
     let cleaned = removeOutliers(allPrices);
-    cleaned = cleaned.filter(p => p <= MAX_PRICE_CENTS);  // drop $99.99 placeholders
+    cleaned = cleaned.filter(p => p <= MAX_PRICE_CENTS);
     if (cleaned.length === 0) continue;
 
-    // Skip items with too few stores (noise)
+    // Use state-wide store count (not just nearby) for noise filter
     const storeCount = new Set();
     for (const idx of g.indices) {
-      for (const nsn of storeNSNs) {
+      for (const nsn of allNSNs) {
         const prices = priceMatrix[nsn];
         if (prices && prices[idx] !== null && prices[idx] > 0 && prices[idx] <= MAX_PRICE_CENTS) {
           storeCount.add(nsn);
@@ -267,6 +270,18 @@ function buildMergedItems() {
     const maxPrice = cleaned[cleaned.length - 1];
     const sum = cleaned.reduce((a, b) => a + b, 0);
 
+    // Also compute the average price at nearby stores specifically
+    let nearbySum = 0, nearbyCount = 0;
+    for (const idx of g.indices) {
+      for (const nsn of nearbyNSNs) {
+        const prices = priceMatrix[nsn];
+        if (prices && prices[idx] !== null && prices[idx] > 0 && prices[idx] <= MAX_PRICE_CENTS) {
+          nearbySum += prices[idx]; nearbyCount++;
+        }
+      }
+    }
+    const localPrice = nearbyCount > 0 ? Math.round(nearbySum / nearbyCount) : Math.round(sum / cleaned.length);
+
     mergedItems.push({
       canonical: g.canonical,
       indices: g.indices,
@@ -274,6 +289,7 @@ function buildMergedItems() {
       minPrice,
       maxPrice,
       avgPrice: Math.round(sum / cleaned.length),
+      localPrice,
       img: getItemImage(g.canonical),
       badge: getItemBadge(g.canonical),
     });
@@ -809,7 +825,7 @@ function buildItemGrid() {
     const card = document.createElement('div');
     card.className = 'item-card';
 
-    const priceStr = formatCents(item.minPrice);
+    const localStr = formatCents(item.localPrice);
     const rangeStr = item.minPrice !== item.maxPrice
       ? `${formatCents(item.minPrice)} – ${formatCents(item.maxPrice)}`
       : '';
@@ -826,7 +842,7 @@ function buildItemGrid() {
       ${badgeHtml}
       ${imgHtml}
       <div class="item-name">${escapeHtml(item.canonical)}</div>
-      <div class="item-price">${priceStr}</div>
+      <div class="item-price">${localStr}</div>
       ${rangeStr ? `<div class="item-range">${rangeStr}</div>` : ''}
     `;
 
