@@ -1057,4 +1057,12 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(renderChart, 200);
   });
+
+  // Mobile cart toggle — tap header to expand/collapse
+  const cartHeader = document.querySelector('.pos-cart .cart-header');
+  if (cartHeader) {
+    cartHeader.addEventListener('click', () => {
+      document.querySelector('.pos-cart').classList.toggle('expanded');
+    });
+  }
 });
